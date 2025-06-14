@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ai-stock-analyzer.com/sitemap.xml 
