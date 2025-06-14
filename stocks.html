@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銘柄一覧 - AI Stock Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AI Stock Analyzer</div>
+            <ul>
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="stocks.html">銘柄一覧</a></li>
+                <li><a href="privacy-policy.html">プライバシーポリシー</a></li>
+                <li><a href="terms.html">利用規約</a></li>
+                <li><a href="contact.html">お問い合わせ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h1>銘柄一覧</h1>
+            <p>AI Stock Analyzerで分析可能な銘柄の一覧です。</p>
+            <table>
+                <thead>
+                    <tr><th>銘柄コード</th><th>銘柄名</th></tr>
+                </thead>
+                <tbody id="stockList"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI Stock Analyzer. All rights reserved.</p>
+    </footer>
+
+    <script>
+    const stockNames = {
+        '7203.T': 'トヨタ自動車',
+        '9984.T': 'ソフトバンクグループ',
+        '6758.T': 'ソニーグループ',
+        '8306.T': '三菱UFJフィナンシャル・グループ',
+        '6501.T': '日立製作所'
+    };
+    for (let i = 1301; i <= 1495; i++) {
+        stockNames[`${i}.T`] = `企業${i}`;
+    }
+    const tbody = document.getElementById('stockList');
+    Object.keys(stockNames).sort().forEach(code => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${code}</td><td>${stockNames[code]}</td>`;
+        tbody.appendChild(tr);
+    });
+    </script>
+</body>
+</html>
