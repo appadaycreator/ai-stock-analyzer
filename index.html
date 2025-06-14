@@ -363,7 +363,17 @@
         .history-item:last-child {
             border-bottom: none;
         }
-        
+
+        .reason-list {
+            margin-top: 10px;
+            padding-left: 20px;
+            text-align: left;
+        }
+
+        .reason-list li {
+            margin-bottom: 4px;
+        }
+
         @media (max-width: 768px) {
             .search-form {
                 flex-direction: column;
@@ -454,6 +464,10 @@
             <div id="aiPrediction" class="info-card" style="margin: 20px 0;">
                 <h3>🤖 AI予測</h3>
                 <div class="value" id="predictionText">分析中...</div>
+            </div>
+            <div id="aiReason" class="info-card" style="margin: 20px 0;">
+                <h3>📝 AI判断理由</h3>
+                <ul id="reasonList" class="reason-list"></ul>
             </div>
             <div style="text-align: right; margin-top: 10px;">
                 <button id="favoriteBtn" class="btn" onclick="toggleFavorite(currentStock.code)">☆ お気に入り登録</button>
@@ -586,6 +600,7 @@
                     displayResults(data, stockCode);
                     addToHistory(currentStock);
                     generateAIPrediction(data);
+                    generateAIReasoning(data);
                     updateFavoriteButton();
                 } else {
                     throw new Error('株価データを取得できませんでした');
@@ -653,7 +668,9 @@
                     volume: prices[prices.length - 1].volume,
                     marketCap: Math.floor(Math.random() * 10000000000000),
                     per: 15 + Math.random() * 20,
-                    pbr: 1 + Math.random() * 3
+                    pbr: 1 + Math.random() * 3,
+                    roe: 5 + Math.random() * 15,
+                    dividendYield: Math.random() * 5
                 }
             };
         }
@@ -818,6 +835,14 @@
                     <div class="value">${info.pbr.toFixed(2)}倍</div>
                 </div>
                 <div class="info-card">
+                    <h3>ROE</h3>
+                    <div class="value">${info.roe.toFixed(2)}%</div>
+                </div>
+                <div class="info-card">
+                    <h3>配当利回り</h3>
+                    <div class="value">${info.dividendYield.toFixed(2)}%</div>
+                </div>
+                <div class="info-card">
                     <h3>時価総額</h3>
                     <div class="value">${formatMarketCap(info.marketCap)}</div>
                 </div>
@@ -845,6 +870,7 @@
             const closePrices = prices.map(p => p.close);
             const ma5 = calculateMovingAverage(prices, 5);
             const ma20 = calculateMovingAverage(prices, 20);
+            const bb = calculateBollingerBands(prices, 20, 2);
 
             stockChart = new Chart(ctx, {
                 type: 'line',
@@ -876,6 +902,26 @@
                             borderWidth: 1.5,
                             fill: false,
                             spanGaps: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'BB上部',
+                            data: bb.upper,
+                            borderColor: '#9ca3af',
+                            borderWidth: 1,
+                            fill: false,
+                            spanGaps: true,
+                            borderDash: [4,4],
+                            tension: 0.4
+                        },
+                        {
+                            label: 'BB下部',
+                            data: bb.lower,
+                            borderColor: '#9ca3af',
+                            borderWidth: 1,
+                            fill: false,
+                            spanGaps: true,
+                            borderDash: [4,4],
                             tension: 0.4
                         }
                     ]
@@ -994,6 +1040,33 @@
             }, 3000);
         }
 
+        function generateAIReasoning(data) {
+            const reasons = [];
+            const closes = data.prices.map(p => p.close);
+            const ma20 = calculateMovingAverage(data.prices, 20).pop();
+            const latest = closes[closes.length - 1];
+            const trend10 = calculateTrend(closes.slice(-10));
+
+            if (trend10 > 0.02) {
+                reasons.push('過去10日間で上昇傾向');
+            } else if (trend10 < -0.02) {
+                reasons.push('過去10日間で下降傾向');
+            }
+
+            if (ma20 && latest > ma20) {
+                reasons.push('終値が20日移動平均を上回る');
+            } else if (ma20) {
+                reasons.push('終値が20日移動平均を下回る');
+            }
+
+            if (data.prices.slice(-2)[1].volume > data.prices.slice(-2)[0].volume) {
+                reasons.push('直近で出来高が増加');
+            }
+
+            const list = document.getElementById('reasonList');
+            list.innerHTML = reasons.map(r => `<li>${r}</li>`).join('');
+        }
+
         // トレンド計算
         function calculateTrend(prices) {
             if (prices.length < 2) return 0;
@@ -1019,6 +1092,27 @@
                 result.push(sum / period);
             }
             return result;
+        }
+
+        function calculateBollingerBands(prices, period = 20, k = 2) {
+            const ma = calculateMovingAverage(prices, period);
+            const upper = [];
+            const lower = [];
+            for (let i = 0; i < prices.length; i++) {
+                if (i < period - 1) {
+                    upper.push(null);
+                    lower.push(null);
+                    continue;
+                }
+                let variance = 0;
+                for (let j = i - period + 1; j <= i; j++) {
+                    variance += Math.pow(prices[j].close - ma[i], 2);
+                }
+                const std = Math.sqrt(variance / period);
+                upper.push(ma[i] + k * std);
+                lower.push(ma[i] - k * std);
+            }
+            return { upper, lower };
         }
 
         // 履歴に追加
