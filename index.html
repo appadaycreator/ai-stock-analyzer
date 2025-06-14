@@ -359,8 +359,8 @@
             <h2>📈 銘柄を分析</h2>
             <form id="searchForm" class="search-form">
                 <div class="form-group">
-                    <label for="stockCode">銘柄コード</label>
-                    <input type="text" id="stockCode" placeholder="例: 7203 (トヨタ)" required>
+                    <label for="stockCode">銘柄コード(複数可・カンマ区切り)</label>
+                    <input type="text" id="stockCode" placeholder="例: 7203, 6758" required>
                 </div>
                 <div class="form-group">
                     <label for="period">分析期間</label>
@@ -497,13 +497,19 @@
 
         // 株価分析メイン関数
         async function analyzeStock(stockCode, period) {
+            const codes = stockCode.split(',').map(c => c.trim()).filter(c => c);
+
+            if (codes.length > 1) {
+                await analyzeMultipleStocks(codes, period);
+                return;
+            }
+
             showLoading(true);
-            
+
             try {
-                // Yahoo Finance APIを使用（実際の実装では適切なAPIを使用）
-                const symbol = stockCode + '.T'; // 東証銘柄
+                const symbol = stockCode + '.T';
                 const data = await fetchStockData(symbol, period);
-                
+
                 if (data) {
                     currentStock = {
                         code: stockCode,
@@ -512,14 +518,33 @@
                         data: data,
                         analyzedAt: new Date().toISOString()
                     };
-                    
+
                     displayResults(data, stockCode);
                     addToHistory(currentStock);
                     generateAIPrediction(data);
                 } else {
                     throw new Error('株価データを取得できませんでした');
                 }
-                
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('株価データの取得に失敗しました。銘柄コードを確認してください。');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function analyzeMultipleStocks(codes, period) {
+            showLoading(true);
+            currentStock = null;
+            try {
+                const dataList = await Promise.all(codes.map(c => fetchStockData(c + '.T', period)));
+                const datasets = dataList.map((data, idx) => ({
+                    code: codes[idx],
+                    symbol: codes[idx] + '.T',
+                    data: data
+                }));
+                displayComparisonResults(datasets);
             } catch (error) {
                 console.error('Error:', error);
                 alert('株価データの取得に失敗しました。銘柄コードを確認してください。');
@@ -719,6 +744,60 @@
                             display: true,
                             position: 'top'
                         }
+                    }
+                }
+            });
+        }
+
+        function displayComparisonResults(datasets) {
+            const title = datasets.map(d => `${getStockName(d.symbol)} (${d.code})`).join(' vs ');
+            document.getElementById('stockTitle').textContent = title + ' - 比較結果';
+
+            const infoHtml = datasets.map(d => `
+                <div class="info-card">
+                    <h3>${getStockName(d.symbol)}</h3>
+                    <div class="value">${formatNumber(d.data.info.currentPrice)}円</div>
+                </div>
+            `).join('');
+
+            document.getElementById('stockInfo').innerHTML = infoHtml;
+
+            drawComparisonChart(datasets);
+
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function drawComparisonChart(datasets) {
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            if (stockChart) {
+                stockChart.destroy();
+            }
+
+            const labels = datasets[0].data.prices.map(p => new Date(p.date).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' }));
+            const colors = ['#4f46e5', '#f59e0b', '#10b981', '#ef4444', '#6366f1'];
+            const chartDatasets = datasets.map((d, idx) => ({
+                label: getStockName(d.symbol),
+                data: d.data.prices.map(p => p.close),
+                borderColor: colors[idx % colors.length],
+                backgroundColor: 'rgba(0,0,0,0)',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4
+            }));
+
+            stockChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: labels, datasets: chartDatasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: false },
+                        x: {}
                     }
                 }
             });
