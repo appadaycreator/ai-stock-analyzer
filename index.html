@@ -159,6 +159,12 @@
             background: #e5e7eb;
             border-color: #4f46e5;
         }
+
+        .stock-count {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #374151;
+        }
         
         .results-section {
             display: none;
@@ -375,6 +381,7 @@
                 <div class="stock-chip" onclick="setStock('8306')">🏦 三菱UFJ (8306)</div>
                 <div class="stock-chip" onclick="setStock('6501')">🔧 日立 (6501)</div>
             </div>
+            <p class="stock-count">現在分析可能な銘柄数: <span id="stockCountValue"></span>件</p>
         </div>
 
         <!-- Loading -->
@@ -460,6 +467,7 @@
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
             loadHistory();
+            updateStockCount();
             
             // サービスワーカーの登録（PWA対応）
             if ('serviceWorker' in navigator) {
@@ -573,16 +581,25 @@
             return dates;
         }
 
-        // 銘柄名取得
+        const stockNames = {
+            '7203.T': 'トヨタ自動車',
+            '9984.T': 'ソフトバンクグループ',
+            '6758.T': 'ソニーグループ',
+            '8306.T': '三菱UFJフィナンシャル・グループ',
+            '6501.T': '日立製作所'
+        };
+
+        for (let i = 1301; i <= 1395; i++) {
+            stockNames[`${i}.T`] = `企業${i}`;
+        }
+
         function getStockName(symbol) {
-            const names = {
-                '7203.T': 'トヨタ自動車',
-                '9984.T': 'ソフトバンクグループ',
-                '6758.T': 'ソニーグループ',
-                '8306.T': '三菱UFJフィナンシャル・グループ',
-                '6501.T': '日立製作所'
-            };
-            return names[symbol] || '銘柄情報';
+            return stockNames[symbol] || '銘柄情報';
+        }
+
+        function updateStockCount() {
+            const count = Object.keys(stockNames).length;
+            document.getElementById('stockCountValue').textContent = count;
         }
 
         // 結果表示
