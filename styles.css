@@ -17,6 +17,7 @@ nav {
     justify-content: space-between;
     max-width: 1000px;
     margin: 0 auto;
+    position: relative;
 }
 
 .logo {
@@ -84,4 +85,37 @@ form textarea {
 
 .submit-button:hover {
     background: #3730a3;
+}
+/* Hamburger Menu */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background: #fff;
+    margin: 4px 0;
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        background: #4f46e5;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        padding: 10px 0;
+    }
+    nav ul.active {
+        display: flex;
+    }
+    .menu-toggle {
+        display: flex;
+    }
 }

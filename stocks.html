@@ -25,8 +25,14 @@
     <header>
         <nav>
             <div class="logo">AI Stock Analyzer</div>
-            <ul>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="menu">
                 <li><a href="index.html">ホーム</a></li>
+                <li><a href="dashboard.html">マーケット概況</a></li>
                 <li><a href="stocks.html">銘柄一覧</a></li>
                 <li><a href="screener.html">スクリーニング</a></li>
                 <li><a href="privacy-policy.html">プライバシーポリシー</a></li>
@@ -162,6 +168,9 @@
         tr.innerHTML = `<td>${code}</td><td>${stockNames[code]}</td>`;
         tbody.appendChild(tr);
     });
+    function toggleMenu() {
+        document.getElementById('menu').classList.toggle('active');
+    }
     </script>
 </body>
 </html>

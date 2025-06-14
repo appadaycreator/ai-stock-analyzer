@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マーケット概況 - AI Stock Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AI Stock Analyzer</div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="menu">
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="dashboard.html">マーケット概況</a></li>
+                <li><a href="stocks.html">銘柄一覧</a></li>
+                <li><a href="screener.html">スクリーニング</a></li>
+                <li><a href="privacy-policy.html">プライバシーポリシー</a></li>
+                <li><a href="terms.html">利用規約</a></li>
+                <li><a href="contact.html">お問い合わせ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h1>マーケット概況ダッシュボード</h1>
+            <p>主要指数や為替、原油価格などの一覧です。</p>
+            <table>
+                <thead>
+                    <tr><th>指標</th><th>値</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>日経平均株価</td><td>33,000</td></tr>
+                    <tr><td>TOPIX</td><td>2,300</td></tr>
+                    <tr><td>ドル/円</td><td>150.00</td></tr>
+                    <tr><td>原油先物</td><td>80.00</td></tr>
+                </tbody>
+            </table>
+            <h2>業種別騰落率</h2>
+            <table>
+                <thead>
+                    <tr><th>業種</th><th>騰落率</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>情報・通信</td><td>+1.5%</td></tr>
+                    <tr><td>輸送用機器</td><td>-0.8%</td></tr>
+                    <tr><td>銀行業</td><td>+0.3%</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 AI Stock Analyzer. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
