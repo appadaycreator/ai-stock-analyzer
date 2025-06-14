@@ -1,13 +1,13 @@
-const CACHE_NAME = 'ai-stock-analyzer-v4';
+const CACHE_NAME = 'ai-stock-analyzer-v5';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/privacy-policy.html',
-  '/terms.html',
-  '/contact.html',
-  '/stocks.html',
-  '/manifest.json',
-  '/styles.css'
+  './',
+  'index.html',
+  'privacy-policy.html',
+  'terms.html',
+  'contact.html',
+  'stocks.html',
+  'manifest.json',
+  'styles.css'
 ];
 
 self.addEventListener('install', event => {
