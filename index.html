@@ -760,14 +760,16 @@
 
         // ローディング表示制御
         function showLoading(show) {
-            document.getElementById('loading').style.display = show ?
-                // 数値フォーマット
-    function formatNumber(num) {
-        return new Intl.NumberFormat('ja-JP').format(Math.round(num));
-    }
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
 
-    // 出来高フォーマット
-    function formatVolume(volume) {
+        // 数値フォーマット
+        function formatNumber(num) {
+            return new Intl.NumberFormat('ja-JP').format(Math.round(num));
+        }
+
+        // 出来高フォーマット
+        function formatVolume(volume) {
         if (volume >= 100000000) {
             return (volume / 100000000).toFixed(1) + '億株';
         } else if (volume >= 10000) {
