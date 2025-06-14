@@ -184,6 +184,16 @@
             border-color: #4f46e5;
         }
 
+        .stock-chip .remove-btn {
+            margin-left: 6px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .stock-chip .remove-btn:hover {
+            color: #000;
+        }
+
         .stock-count {
             margin-top: 10px;
             font-size: 0.9rem;
@@ -411,6 +421,12 @@
             <p class="stock-count">現在分析可能な銘柄数: <span id="stockCountValue"></span>件</p>
         </div>
 
+        <!-- Favorites Section -->
+        <div id="favoritesSection" class="search-section" style="display:none;">
+            <h2>⭐ お気に入り銘柄</h2>
+            <div id="favoriteList" class="popular-stocks"></div>
+        </div>
+
         <!-- Loading -->
         <div id="loading" class="loading">
             <div class="spinner"></div>
@@ -432,6 +448,9 @@
             <div id="aiPrediction" class="info-card" style="margin: 20px 0;">
                 <h3>🤖 AI予測</h3>
                 <div class="value" id="predictionText">分析中...</div>
+            </div>
+            <div style="text-align: right; margin-top: 10px;">
+                <button id="favoriteBtn" class="btn" onclick="toggleFavorite(currentStock.code)">☆ お気に入り登録</button>
             </div>
         </div>
 
@@ -490,11 +509,14 @@
         let stockChart = null;
         let currentStock = null;
         let analysisHistory = JSON.parse(localStorage.getItem('stockAnalysisHistory')) || [];
+        let favoriteStocks = JSON.parse(localStorage.getItem('favoriteStocks')) || [];
 
         // ページ読み込み時の初期化
         document.addEventListener('DOMContentLoaded', function() {
             loadHistory();
             updateStockCount();
+            renderFavorites();
+            updateFavoriteButton();
             
             // サービスワーカーの登録（PWA対応）
             if ('serviceWorker' in navigator) {
@@ -558,6 +580,7 @@
                     displayResults(data, stockCode);
                     addToHistory(currentStock);
                     generateAIPrediction(data);
+                    updateFavoriteButton();
                 } else {
                     throw new Error('株価データを取得できませんでした');
                 }
@@ -573,6 +596,7 @@
         async function analyzeMultipleStocks(codes, period) {
             showLoading(true);
             currentStock = null;
+            updateFavoriteButton();
             try {
                 const dataList = await Promise.all(codes.map(c => fetchStockData(c + '.T', period)));
                 const datasets = dataList.map((data, idx) => ({
@@ -869,7 +893,19 @@
                 </div>
             `).join('');
 
-            document.getElementById('stockInfo').innerHTML = infoHtml;
+            const portfolioReturn = datasets.reduce((acc, d) => {
+                const prices = d.data.prices;
+                return acc + (prices[prices.length - 1].close - prices[0].close) / prices[0].close;
+            }, 0) / datasets.length;
+
+            const portfolioHtml = `
+                <div class="info-card">
+                    <h3>ポートフォリオ平均リターン</h3>
+                    <div class="value">${(portfolioReturn * 100).toFixed(2)}%</div>
+                </div>
+            `;
+
+            document.getElementById('stockInfo').innerHTML = infoHtml + portfolioHtml;
 
             drawComparisonChart(datasets);
 
@@ -1029,6 +1065,48 @@
             return (marketCap / 100000000).toFixed(0) + '億円';
         }
         return formatNumber(marketCap) + '円';
+    }
+
+    // お気に入り管理
+    function renderFavorites() {
+        const list = document.getElementById('favoriteList');
+        if (!list) return;
+        list.innerHTML = favoriteStocks.map(code => `
+            <div class="stock-chip" onclick="setStock('${code}')">
+                ${getStockName(code + '.T')} (${code})
+                <span class="remove-btn" onclick="removeFavorite(event, '${code}')">✕</span>
+            </div>
+        `).join('');
+        document.getElementById('favoritesSection').style.display = favoriteStocks.length ? 'block' : 'none';
+    }
+
+    function toggleFavorite(code) {
+        if (!code) return;
+        if (favoriteStocks.includes(code)) {
+            favoriteStocks = favoriteStocks.filter(c => c !== code);
+        } else {
+            favoriteStocks.push(code);
+        }
+        localStorage.setItem('favoriteStocks', JSON.stringify(favoriteStocks));
+        renderFavorites();
+    }
+
+    function removeFavorite(e, code) {
+        e.stopPropagation();
+        favoriteStocks = favoriteStocks.filter(c => c !== code);
+        localStorage.setItem('favoriteStocks', JSON.stringify(favoriteStocks));
+        renderFavorites();
+        updateFavoriteButton();
+    }
+
+    function updateFavoriteButton() {
+        const btn = document.getElementById('favoriteBtn');
+        if (!btn) return;
+        if (currentStock && favoriteStocks.includes(currentStock.code)) {
+            btn.textContent = '★ お気に入り解除';
+        } else {
+            btn.textContent = '☆ お気に入り登録';
+        }
     }
 
     // SNSシェア機能
