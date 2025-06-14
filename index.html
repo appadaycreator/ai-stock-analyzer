@@ -396,6 +396,26 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
+    <header>
+        <nav>
+            <div class="logo">AI Stock Analyzer</div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="menu">
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="dashboard.html">マーケット概況</a></li>
+                <li><a href="stocks.html">銘柄一覧</a></li>
+                <li><a href="screener.html">スクリーニング</a></li>
+                <li><a href="privacy-policy.html">プライバシーポリシー</a></li>
+                <li><a href="terms.html">利用規約</a></li>
+                <li><a href="contact.html">お問い合わせ</a></li>
+            </ul>
+        </nav>
+    </header>
+
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -1261,5 +1281,9 @@
         const changePercent = currentStock.data.info.changePercent.toFixed(2);
         
         return `🤖AI Stock Analyzerで${stockName}を分析！\n現在価格: ${price}円 (${change}${changePercent}%)\n\n#継続は力なり #株価分析 #AI投資`;
+    }
+
+    function toggleMenu() {
+        document.getElementById('menu').classList.toggle('active');
     }
 </script>
