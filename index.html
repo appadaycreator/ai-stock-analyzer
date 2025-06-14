@@ -116,6 +116,30 @@
             font-size: 16px;
             transition: border-color 0.3s;
         }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            padding-right: 35px;
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .clear-btn:hover {
+            color: #000;
+        }
         
         .form-group input:focus, .form-group select:focus {
             outline: none;
@@ -360,7 +384,10 @@
             <form id="searchForm" class="search-form">
                 <div class="form-group">
                     <label for="stockCode">銘柄コード(複数可・カンマ区切り)</label>
-                    <input type="text" id="stockCode" placeholder="例: 7203, 6758" required>
+                    <div class="input-wrapper">
+                        <input type="text" id="stockCode" placeholder="例: 7203, 6758" required>
+                        <button type="button" class="clear-btn" onclick="clearStock()">✕</button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="period">分析期間</label>
@@ -492,7 +519,16 @@
 
         // 銘柄設定
         function setStock(code) {
-            document.getElementById('stockCode').value = code;
+            const input = document.getElementById('stockCode');
+            const current = input.value.split(',').map(c => c.trim()).filter(c => c);
+            if (!current.includes(code)) {
+                current.push(code);
+            }
+            input.value = current.join(', ');
+        }
+
+        function clearStock() {
+            document.getElementById('stockCode').value = '';
         }
 
         // 株価分析メイン関数
