@@ -1,31 +1,22 @@
-const CACHE_NAME = 'ai-stock-analyzer-v1';
+const CACHE_NAME = 'ai-stock-analyzer-v2';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/privacy-policy.html',
+  '/terms.html',
+  '/contact.html',
   '/manifest.json',
-  'https://cdn.jsdelivr.net/npm/chart.js',
-  'https://cdn1.genspark.ai/user-upload-image/22_generated/415a2486-eefe-4e49-a887-aade6346d6dd',
-  'https://cdn1.genspark.ai/user-upload-image/22_generated/0ebc5aa4-f439-448f-afeb-80a978c508a7'
+  '/styles.css'
 ];
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(function(cache) {
-        return cache.addAll(urlsToCache);
-      })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
 });
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      }
-    )
+    caches.match(event.request).then(response => response || fetch(event.request))
   );
 });

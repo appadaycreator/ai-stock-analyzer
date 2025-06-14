@@ -637,28 +637,49 @@
         // チャート描画
         function drawChart(prices) {
             const ctx = document.getElementById('stockChart').getContext('2d');
-            
+
             if (stockChart) {
                 stockChart.destroy();
             }
-            
+
             const labels = prices.map(p => new Date(p.date).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' }));
             const closePrices = prices.map(p => p.close);
-            const volumes = prices.map(p => p.volume);
-            
+            const ma5 = calculateMovingAverage(prices, 5);
+            const ma20 = calculateMovingAverage(prices, 20);
+
             stockChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: '終値',
-                        data: closePrices,
-                        border: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
+                    datasets: [
+                        {
+                            label: '終値',
+                            data: closePrices,
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: '5日MA',
+                            data: ma5,
+                            borderColor: '#f59e0b',
+                            borderWidth: 1.5,
+                            fill: false,
+                            spanGaps: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: '20日MA',
+                            data: ma20,
+                            borderColor: '#10b981',
+                            borderWidth: 1.5,
+                            fill: false,
+                            spanGaps: true,
+                            tension: 0.4
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -716,6 +737,23 @@
             const lastPrice = prices[prices.length - 1];
             
             return (lastPrice - firstPrice) / firstPrice;
+        }
+
+        // 移動平均計算
+        function calculateMovingAverage(prices, period) {
+            const result = [];
+            for (let i = 0; i < prices.length; i++) {
+                if (i < period - 1) {
+                    result.push(null);
+                    continue;
+                }
+                let sum = 0;
+                for (let j = i - period + 1; j <= i; j++) {
+                    sum += prices[j].close;
+                }
+                result.push(sum / period);
+            }
+            return result;
         }
 
         // 履歴に追加
