@@ -42,6 +42,7 @@
             </ul>
         </nav>
     </header>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
 
     <main>
         <section>
@@ -170,7 +171,10 @@
         tbody.appendChild(tr);
     });
     function toggleMenu() {
-        document.getElementById('menu').classList.toggle('active');
+        const menu = document.getElementById('menu');
+        const overlay = document.getElementById('sidebarOverlay');
+        menu.classList.toggle('active');
+        overlay.classList.toggle('active');
     }
     </script>
 </body>
