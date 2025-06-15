@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使い方 - AI Stock Analyzer</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .usage-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .features-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .feature-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">AI Stock Analyzer</div>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul id="menu">
+                <li><a href="index.html">ホーム</a></li>
+                <li><a href="dashboard.html">マーケット概況</a></li>
+                <li><a href="stocks.html">銘柄一覧</a></li>
+                <li><a href="screener.html">スクリーニング</a></li>
+                <li><a href="usage.html">使い方</a></li>
+                <li><a href="privacy-policy.html">プライバシーポリシー</a></li>
+                <li><a href="terms.html">利用規約</a></li>
+                <li><a href="contact.html">お問い合わせ</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="usage-container">
+        <h1>使い方</h1>
+        <p>AI Stock Analyzerの主な機能と利用方法を紹介します。</p>
+        <div class="features-section">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>リアルタイム分析</h3>
+                <p>最新の株価データを取得し、テクニカル指標を自動計算します。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI予測機能</h3>
+                <p>機械学習アルゴリズムにより価格動向を予測します。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>モバイル対応</h3>
+                <p>スマートフォンでも快適に利用可能です。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>履歴保存</h3>
+                <p>過去の分析結果を保存し、比較分析が行えます。</p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 AI Stock Analyzer</p>
+    </footer>
+    <script>
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
