@@ -9,6 +9,7 @@ body {
 
 header {
     background: #4f46e5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     padding: 20px;
     position: fixed;
     top: 0;
@@ -109,16 +110,20 @@ form textarea {
     nav ul {
         display: none;
         flex-direction: column;
-        gap: 10px;
-        background: #4f46e5;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        padding: 10px 0;
+        gap: 15px;
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        position: fixed;
+        top: 0;
+        right: -220px;
+        width: 200px;
+        height: 100%;
+        padding: 60px 20px;
+        box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+        transition: right 0.3s ease;
     }
     nav ul.active {
         display: flex;
+        right: 0;
     }
     .menu-toggle {
         display: flex;
