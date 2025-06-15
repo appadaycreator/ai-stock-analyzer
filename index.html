@@ -247,6 +247,12 @@
         
         .positive { color: #059669 !important; }
         .negative { color: #dc2626 !important; }
+        .info-icon {
+            margin-left: 4px;
+            cursor: pointer;
+            color: #4f46e5;
+            font-weight: bold;
+        }
         
         .chart-container {
             position: relative;
@@ -836,38 +842,38 @@
             // 株価情報表示
             const stockInfoHtml = `
                 <div class="info-card">
-                    <h3>現在価格</h3>
+                    <h3>現在価格 <span class="info-icon" onclick="showInfo('currentPrice')">?</span></h3>
                     <div class="value">${formatNumber(info.currentPrice)}円</div>
                 </div>
                 <div class="info-card">
-                    <h3>前日比</h3>
+                    <h3>前日比 <span class="info-icon" onclick="showInfo('change')">?</span></h3>
                     <div class="value ${info.change >= 0 ? 'positive' : 'negative'}">
                         ${info.change >= 0 ? '+' : ''}${formatNumber(info.change)}円
                         (${info.changePercent >= 0 ? '+' : ''}${info.changePercent.toFixed(2)}%)
                     </div>
                 </div>
                 <div class="info-card">
-                    <h3>出来高</h3>
+                    <h3>出来高 <span class="info-icon" onclick="showInfo('volume')">?</span></h3>
                     <div class="value">${formatVolume(info.volume)}</div>
                 </div>
                 <div class="info-card">
-                    <h3>PER</h3>
+                    <h3>PER <span class="info-icon" onclick="showInfo('per')">?</span></h3>
                     <div class="value">${info.per.toFixed(2)}倍</div>
                 </div>
                 <div class="info-card">
-                    <h3>PBR</h3>
+                    <h3>PBR <span class="info-icon" onclick="showInfo('pbr')">?</span></h3>
                     <div class="value">${info.pbr.toFixed(2)}倍</div>
                 </div>
                 <div class="info-card">
-                    <h3>ROE</h3>
+                    <h3>ROE <span class="info-icon" onclick="showInfo('roe')">?</span></h3>
                     <div class="value">${info.roe.toFixed(2)}%</div>
                 </div>
                 <div class="info-card">
-                    <h3>配当利回り</h3>
+                    <h3>配当利回り <span class="info-icon" onclick="showInfo('dividendYield')">?</span></h3>
                     <div class="value">${info.dividendYield.toFixed(2)}%</div>
                 </div>
                 <div class="info-card">
-                    <h3>時価総額</h3>
+                    <h3>時価総額 <span class="info-icon" onclick="showInfo('marketCap')">?</span></h3>
                     <div class="value">${formatMarketCap(info.marketCap)}</div>
                 </div>
             `;
@@ -1249,6 +1255,21 @@
         } else {
             btn.textContent = '☆ お気に入り登録';
         }
+    }
+
+    const infoDescriptions = {
+        currentPrice: '現在の株価です。',
+        change: '前日比の株価変動を示します。',
+        volume: '1日の取引数量です。',
+        per: '株価収益率(PER)は株価が利益の何倍かを示す指標です。',
+        pbr: '株価純資産倍率(PBR)は株価が1株当たり純資産の何倍かを表します。',
+        roe: '自己資本利益率(ROE)は自己資本に対する当期利益の割合です。',
+        dividendYield: '配当利回りは年間配当金が株価に対してどれだけの割合かを示します。',
+        marketCap: '発行済み株式数に株価を掛け合わせた企業の時価総額です。'
+    };
+
+    function showInfo(key) {
+        alert(infoDescriptions[key]);
     }
 
     // SNSシェア機能
