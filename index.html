@@ -750,7 +750,8 @@
                     per: 15 + Math.random() * 20,
                     pbr: 1 + Math.random() * 3,
                     roe: 5 + Math.random() * 15,
-                    dividendYield: Math.random() * 5
+                    dividendYield: Math.random() * 5,
+                    esgScore: Math.floor(50 + Math.random() * 50)
                 }
             };
         }
@@ -933,6 +934,11 @@
                     <h3>時価総額</h3>
                     <div class="value">${formatMarketCap(info.marketCap)}</div>
                     <p class="info-comment">${infoDescriptions.marketCap}</p>
+                </div>
+                <div class="info-card" onclick="toggleComment(this)">
+                    <h3>ESGスコア</h3>
+                    <div class="value">${info.esgScore}</div>
+                    <p class="info-comment">${infoDescriptions.esgScore}</p>
                 </div>
             `;
             
@@ -1323,7 +1329,8 @@
         pbr: '株価純資産倍率(PBR)は株価が1株当たり純資産の何倍かを表します。',
         roe: '自己資本利益率(ROE)は自己資本に対する当期利益の割合です。',
         dividendYield: '配当利回りは年間配当金が株価に対してどれだけの割合かを示します。',
-        marketCap: '発行済み株式数に株価を掛け合わせた企業の時価総額です。'
+        marketCap: '発行済み株式数に株価を掛け合わせた企業の時価総額です。',
+        esgScore: 'ESG(環境・社会・ガバナンス)への取り組みを評価した指標です。'
     };
 
     function toggleComment(card) {
