@@ -547,7 +547,18 @@
             updateStockCount();
             renderFavorites();
             updateFavoriteButton();
-            
+
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            const periodParam = params.get('period');
+            if (code) {
+                document.getElementById('stockCode').value = code;
+                if (periodParam) {
+                    document.getElementById('period').value = periodParam;
+                }
+                analyzeStock(code, periodParam || document.getElementById('period').value);
+            }
+
             // サービスワーカーの登録（PWA対応）
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(console.error);
