@@ -166,7 +166,8 @@
     const tbody = document.getElementById('stockList');
     Object.keys(stockNames).sort().forEach(code => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${code}</td><td>${stockNames[code]}</td>`;
+        const plain = code.replace('.T', '');
+        tr.innerHTML = `<td><a href="index.html?code=${plain}">${code}</a></td><td>${stockNames[code]}</td>`;
         tbody.appendChild(tr);
     });
     function toggleMenu() {
