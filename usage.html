@@ -45,6 +45,7 @@
             </ul>
         </nav>
     </header>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleMenu()"></div>
     <main class="usage-container">
         <h1>使い方</h1>
         <p>AI Stock Analyzerの主な機能と利用方法を紹介します。</p>
@@ -81,7 +82,10 @@
     </footer>
     <script>
         function toggleMenu() {
-            document.getElementById('menu').classList.toggle('active');
+            const menu = document.getElementById('menu');
+            const overlay = document.getElementById('sidebarOverlay');
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
         }
     </script>
 </body>
