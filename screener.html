@@ -95,6 +95,7 @@
                         <th>配当利回り</th>
                         <th>RSI</th>
                         <th>AIスコア</th>
+                        <th>ESGスコア</th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody"></tbody>
@@ -217,7 +218,8 @@
             dividend: +(Math.random() * 5).toFixed(2),
             rsi: +(10 + Math.random() * 80).toFixed(2),
             goldenCross: Math.random() > 0.7,
-            aiScore: Math.floor(Math.random() * 100)
+            aiScore: Math.floor(Math.random() * 100),
+            esgScore: Math.floor(50 + Math.random() * 50)
         }));
 
         function filterStocks() {
@@ -244,6 +246,7 @@
                     <td>${s.dividend.toFixed(2)}%</td>
                     <td>${s.rsi.toFixed(2)}</td>
                     <td>${s.aiScore}</td>
+                    <td>${s.esgScore}</td>
                 </tr>
             `).join('');
         }
