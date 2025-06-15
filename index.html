@@ -666,17 +666,71 @@
             }
         }
 
+        // 期間を日数に変換
+        function periodToDays(period) {
+            switch (period) {
+                case '1mo':
+                    return 30;
+                case '3mo':
+                    return 90;
+                case '6mo':
+                    return 180;
+                case '1y':
+                    return 365;
+                default:
+                    return 30;
+            }
+        }
+
+        // 楽天証券から追加データ取得
+        async function fetchRakutenData(symbol, neededDays) {
+            try {
+                const url = 'https://www.rakuten-sec.co.jp/web/market/ranking/in_house/#ranking-daily-02';
+                const res = await fetch(url, { mode: 'cors' });
+                if (!res.ok) throw new Error('network');
+                const html = await res.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const rows = doc.querySelectorAll('table tbody tr');
+                const prices = [];
+                let i = 0;
+                for (const row of rows) {
+                    if (prices.length >= neededDays) break;
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length < 5) continue;
+                    const price = parseFloat(cells[2].textContent.replace(/,/g, ''));
+                    const volume = parseInt(cells[4].textContent.replace(/,/g, '')) || 0;
+                    const date = new Date();
+                    date.setDate(date.getDate() - i - 1);
+                    i++;
+                    prices.push({
+                        date: date.toISOString().split('T')[0],
+                        open: price,
+                        high: price,
+                        low: price,
+                        close: price,
+                        volume: volume
+                    });
+                }
+                return prices;
+            } catch (e) {
+                console.error('楽天証券からのデータ取得に失敗しました', e);
+                return [];
+            }
+        }
+
         // 株価データ取得（モックデータ）
         async function fetchStockData(symbol, period) {
             // 実際の実装では Yahoo Finance API や他の株価APIを使用
             // ここではデモ用のモックデータを生成
-            
+
             await new Promise(resolve => setTimeout(resolve, 2000)); // Loading simulation
-            
-            const dates = generateDateRange(30);
+
+            const days = periodToDays(period);
+            const dates = generateDateRange(days);
             const basePrice = 2000 + Math.random() * 1000;
             const prices = [];
-            
+
             for (let i = 0; i < dates.length; i++) {
                 const change = (Math.random() - 0.5) * 100;
                 const price = Math.max(basePrice + change * (i / dates.length), 100);
@@ -690,6 +744,11 @@
                 });
             }
             
+            if (prices.length < days) {
+                const extra = await fetchRakutenData(symbol, days - prices.length);
+                prices.unshift(...extra);
+            }
+
             return {
                 prices: prices,
                 info: {
